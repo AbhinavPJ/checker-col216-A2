@@ -2,7 +2,7 @@
 
 ## Run tests
 
-From clone this repo inside your assignment root and run:
+Clone this repo inside your assignment root and run:
 
 ```bash
 python checker-col216-A2/checker.py
@@ -12,7 +12,7 @@ What this does:
 - `checker.py` runs all pairs in folders named `test1`, `test2`, ...
 - It matches `codeX.txt` with `ansX.txt`
 
-## Add new testcases (contribution)
+## Contribute testcases
 
 Rule: each contributed testcase set must be in a **new** test folder.
 
