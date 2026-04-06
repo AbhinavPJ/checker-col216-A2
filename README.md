@@ -9,6 +9,7 @@ python checker-col216-A2/checker.py
 ```
 
 What this does:
+- Assumes that you have already generated a binary for your processor named 'main'.
 - `checker.py` runs all pairs in folders named `test1`, `test2`, ...
 - It matches `codeX.txt` with `ansX.txt`
 
