@@ -10,7 +10,10 @@ COMPILER = ROOT / "../compiler.py"
 BINARY = ROOT / "../main"
 
 def read_expected(path):
-    return path.read_bytes().decode("utf-16")
+    data = path.read_bytes()
+    if data.startswith(b'\xff\xfe') or data.startswith(b'\xfe\xff'):
+        return data.decode("utf-16")
+    return data.decode("utf-8", errors="ignore")
 
 def normalize(text):
     lines = text.splitlines()
