@@ -1,0 +1,13 @@
+# test7/code1: store->load same-address overlap + dependent arithmetic
+.A: 10 20 30 40
+
+addi x1 x0 0
+addi x2 x0 111
+sw x2 A(x1)
+lw x3 A(x1)
+add x4 x3 x2
+sw x4 A(x1)
+lw x5 A(x1)
+add x6 x5 x3
+
+

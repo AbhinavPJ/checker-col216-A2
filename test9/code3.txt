@@ -1,0 +1,18 @@
+
+
+.A: 1 0 0 0 0
+    lw x10 A(x0)      # I1: Long latency (~4 cycles). Next instruction depends on it.
+    div x1 x2 x10     # I2: Very long latency (~5 cycles). Depends on I1.
+    add x3 x0 x0      # I3: Fast, independent.
+    add x4 x0 x0      # I4: Fast, independent. (ROB=4 is now fully saturated!)
+    
+    # --- IF ROB=4, the processor STALLS here and cannot decode I5 yet ---
+    # --- IF ROB=64, the processor decodes I5 immediately and executes it ---
+    
+    div x5 x6 x7      # I5: Very long latency (~5 cycles). INDEPENDENT from above!
+    add x8 x0 x0      # I6: Fast.
+    add x9 x0 x0      # I7: Fast.
+    #Although number of cycles is same for both ROB4 and ROB64
+    # Different answer for rob_size = 3 vs rob_size = 64! due to stalling
+    # rob_size = 3 -> 19 cycles
+    # rob_size = 64 -> 15 cycles

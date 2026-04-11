@@ -1,0 +1,11 @@
+# test7/code2: load must not be blocked by older store to different address
+.A: 1 2 3 4 5
+
+addi x1 x0 0
+addi x2 x0 4
+sw x2 A(x1)      # A[0] = 4
+addi x1 x1 1
+lw x3 A(x1)      # should read A[1] = 2
+add x4 x3 x2
+sw x4 A(x1)      # A[1] = 6
+lw x5 A(x1)
