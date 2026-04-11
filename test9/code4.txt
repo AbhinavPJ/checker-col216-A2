@@ -1,0 +1,35 @@
+# test7/code4: difficult mixed memory-ordering chain
+# Stresses:
+# 1) store->load forwarding at same address
+# 2) load not blocked by older store to different address
+# 3) long dependency chain through memory + registers
+#
+# Initial: A = [5, 7, 11, 13, 17]
+# Expected final: A = [12, 5, 12, 24, 17]
+
+.A: 5 7 11 13 17
+
+addi x1 x0 0          # idx0
+addi x2 x0 1          # idx1
+addi x3 x0 2          # idx2
+addi x4 x0 3          # idx3
+
+lw x10 A(x1)          # x10 = 5
+lw x11 A(x2)          # x11 = 7
+
+sw x11 A(x1)          # A[0] = 7
+lw x12 A(x1)          # must read 7 (same-address overlap)
+
+sw x10 A(x2)          # A[1] = 5
+lw x13 A(x2)          # must read 5 (same-address overlap)
+
+add x14 x12 x13       # 7 + 5 = 12
+sw x14 A(x3)          # A[2] = 12
+lw x15 A(x3)          # x15 = 12
+
+sw x15 A(x1)          # A[0] = 12
+lw x16 A(x1)          # must read 12
+
+add x17 x16 x14       # 12 + 12 = 24
+sw x17 A(x4)          # A[3] = 24
+lw x18 A(x4)          # x18 = 24
