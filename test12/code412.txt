@@ -1,0 +1,384 @@
+j test_start
+crash_backward:
+test_start:
+freg_init:
+freg_s_init:
+freg_d_init:
+xreg_init:
+j pseg_0
+pseg_0:
+addi x21 x0 537
+addi x18 x0 645
+addi x20 x0 1
+addi x14 x0 1646
+addi x17 x0 1
+addi x26 x0 -942
+sub x2 x8 x8
+addi x13 x0 -205
+addi x10 x0 -845
+addi x12 x0 -1949
+xor x5 x11 x7
+addi x15 x0 665
+addi x4 x15 788
+or x9 x28 x0
+addi x5 x12 0
+addi x8 x12 -549
+mul x24 x21 x4
+ble x12 x8 crash_forward
+addi x25 x0 -1
+addi x26 x0 706
+mul x13 x16 x16
+xor x25 x25 x20
+addi x13 x0 -962
+addi x30 x0 -1
+addi x15 x0 1073
+addi x27 x0 397
+and x28 x2 x25
+addi x11 x5 0
+xor x30 x30 x17
+and x29 x12 x30
+addi x2 x0 -1154
+or x16 x29 x17
+sw x21 1862(x4)
+addi x21 x0 193
+addi x14 x0 865
+blt x5 x11 crash_forward
+addi x7 x26 969
+or x19 x28 x20
+ori x17 x13 -117
+addi x10 x0 106
+addi x25 x0 233
+addi x2 x0 1485
+addi x19 x0 715
+addi x13 x0 424
+addi x29 x0 1
+addi x23 x0 -1192
+addi x14 x0 -2018
+sub x20 x25 x19
+addi x24 x13 572
+addi x12 x0 -738
+addi x16 x12 -74
+blt x12 x16 crash_forward
+addi x22 x0 -947
+addi x7 x0 1
+bne x18 x18 crash_backward
+addi x23 x0 700
+add x21 x2 x14
+addi x27 x0 1687
+sub x1 x27 x27
+addi x18 x0 -1
+xor x18 x18 x29
+addi x9 x23 22
+xor x14 x25 x15
+and x3 x20 x18
+addi x4 x0 1996
+addi x25 x0 -1
+addi x28 x0 -1487
+or x8 x3 x29
+addi x20 x0 -1214
+addi x1 x0 -1514
+xor x21 x1 x1
+xor x25 x25 x7
+and x24 x31 x25
+or x13 x6 x7
+addi x28 x0 -411
+addi x17 x0 1078
+addi x4 x0 1
+mul x29 x16 x16
+ble x24 x13 crash_backward
+and x6 x17 x17
+addi x14 x0 -1581
+div x19 x19 x19
+addi x7 x0 -1412
+addi x3 x0 -929
+addi x16 x0 -1131
+slt x6 x11 x11
+rem x18 x6 x6
+addi x13 x0 926
+add x12 x20 x16
+addi x27 x0 -1
+or x18 x10 x4
+addi x29 x0 -1355
+addi x25 x0 962
+addi x26 x0 604
+addi x8 x0 181
+addi x19 x0 -311
+addi x9 x0 1880
+or x2 x28 x18
+xor x27 x27 x4
+addi x23 x9 303
+addi x11 x0 42
+and x21 x20 x27
+addi x7 x0 960
+addi x24 x0 -1433
+addi x5 x0 -93
+addi x12 x0 1196
+addi x2 x0 1887
+addi x29 x0 -570
+addi x15 x0 -106
+addi x28 x0 0
+sub x10 x3 x3
+addi x18 x0 0
+addi x14 x0 -1206
+slt x9 x24 x24
+addi x20 x0 1
+or x1 x21 x4
+rem x19 x29 x15
+addi x23 x14 -876
+addi x4 x0 1
+addi x1 x0 -1446
+div x12 x4 x31
+addi x16 x0 -1764
+addi x21 x0 -1553
+addi x18 x0 659
+addi x11 x18 1939
+addi x29 x0 -1
+slt x8 x1 x1
+addi x11 x0 -1696
+addi x13 x0 -818
+lw x25 458(x12)
+addi x14 x0 236
+or x28 x19 x19
+addi x26 x0 -1
+addi x10 x0 339
+xor x29 x29 x4
+xor x26 x26 x20
+addi x23 x0 -616
+addi x3 x0 1140
+and x5 x8 x29
+addi x27 x3 1673
+addi x24 x0 -845
+and x1 x24 x24
+blt x27 x3 crash_forward
+and x22 x18 x26
+or x6 x5 x4
+addi x13 x0 -564
+addi x19 x0 -771
+or x17 x24 x20
+addi x23 x0 -177
+addi x7 x0 479
+sub x18 x19 x19
+and x15 x30 x18
+or x8 x13 x13
+addi x10 x0 -1654
+addi x29 x0 -1545
+addi x11 x0 1608
+addi x27 x0 0
+addi x6 x0 1995
+addi x31 x0 -1037
+addi x4 x0 0
+mul x21 x11 x11
+addi x24 x0 0
+addi x9 x0 0
+div x5 x29 x6
+addi x8 x0 -519
+addi x11 x0 344
+or x9 x22 x22
+addi x15 x11 161
+addi x3 x0 853
+mul x14 x7 x7
+addi x17 x0 1
+addi x4 x0 1
+beq x11 x15 crash_backward
+blt x27 x24 crash_backward
+addi x2 x0 -1995
+addi x6 x0 -1
+div x13 x25 x25
+addi x1 x0 -836
+blt x0 x0 crash_forward
+addi x21 x0 398
+xor x6 x6 x4
+addi x15 x0 -722
+and x29 x15 x6
+addi x22 x1 -1881
+or x5 x29 x4
+addi x26 x21 1891
+addi x9 x0 -1365
+addi x13 x0 -426
+addi x10 x0 -205
+addi x18 x0 -1
+addi x31 x15 -1069
+xor x18 x18 x17
+addi x11 x0 183
+and x19 x21 x18
+or x12 x27 x17
+addi x27 x0 -1083
+addi x8 x0 1289
+addi x24 x0 -1334
+addi x30 x0 -165
+add x16 x9 x27
+xor x14 x8 x30
+addi x24 x0 -193
+addi x29 x0 -202
+addi x3 x0 -952
+addi x25 x0 0
+addi x1 x0 8
+addi x23 x0 -1181
+addi x19 x11 0
+addi x21 x0 -1613
+addi x6 x19 0
+blt x19 x6 crash_forward
+addi x17 x0 0
+addi x16 x0 -713
+addi x20 x0 1
+blt x25 x17 crash_forward
+addi x12 x0 -913
+slt x28 x1 x16
+addi x10 x0 1
+addi x31 x31 -861
+mul x29 x14 x11
+bne x16 x16 crash_forward
+addi x30 x0 -1
+rem x26 x21 x21
+xor x30 x30 x20
+and x2 x6 x30
+addi x22 x0 -1
+xor x22 x22 x10
+and x18 x9 x22
+or x27 x7 x20
+or x7 x18 x10
+j reg_dump
+reg_dump:
+lw x2 0(x1)
+addi x3 x2 -1
+sw x3 0(x1)
+bne x2 x0 pseg_0
+freg_save:
+j test_end
+crash_forward:
+test_end:
+hidden_data:
+xreg_init_data:
+reg_x0_init:
+reg_x1_init:
+reg_x2_init:
+reg_x3_init:
+reg_x4_init:
+reg_x5_init:
+reg_x6_init:
+reg_x7_init:
+reg_x8_init:
+reg_x9_init:
+reg_x10_init:
+reg_x11_init:
+reg_x12_init:
+reg_x13_init:
+reg_x14_init:
+reg_x15_init:
+reg_x16_init:
+reg_x17_init:
+reg_x18_init:
+reg_x19_init:
+reg_x20_init:
+reg_x21_init:
+reg_x22_init:
+reg_x23_init:
+reg_x24_init:
+reg_x25_init:
+reg_x26_init:
+reg_x27_init:
+reg_x28_init:
+reg_x29_init:
+reg_x30_init:
+reg_x31_init:
+freg_init_data:
+reg_f0_init:
+reg_f1_init:
+reg_f2_init:
+reg_f3_init:
+reg_f4_init:
+reg_f5_init:
+reg_f6_init:
+reg_f7_init:
+reg_f8_init:
+reg_f9_init:
+reg_f10_init:
+reg_f11_init:
+reg_f12_init:
+reg_f13_init:
+reg_f14_init:
+reg_f15_init:
+reg_f16_init:
+reg_f17_init:
+reg_f18_init:
+reg_f19_init:
+reg_f20_init:
+reg_f21_init:
+reg_f22_init:
+reg_f23_init:
+reg_f24_init:
+reg_f25_init:
+reg_f26_init:
+reg_f27_init:
+reg_f28_init:
+reg_f29_init:
+reg_f30_init:
+reg_f31_init:
+xreg_output_data:
+reg_x0_output:
+reg_x1_output:
+reg_x2_output:
+reg_x3_output:
+reg_x4_output:
+reg_x5_output:
+reg_x6_output:
+reg_x7_output:
+reg_x8_output:
+reg_x9_output:
+reg_x10_output:
+reg_x11_output:
+reg_x12_output:
+reg_x13_output:
+reg_x14_output:
+reg_x15_output:
+reg_x16_output:
+reg_x17_output:
+reg_x18_output:
+reg_x19_output:
+reg_x20_output:
+reg_x21_output:
+reg_x22_output:
+reg_x23_output:
+reg_x24_output:
+reg_x25_output:
+reg_x26_output:
+reg_x27_output:
+reg_x28_output:
+reg_x29_output:
+reg_x30_output:
+reg_x31_output:
+freg_output_data:
+reg_f0_output:
+reg_f1_output:
+reg_f2_output:
+reg_f3_output:
+reg_f4_output:
+reg_f5_output:
+reg_f6_output:
+reg_f7_output:
+reg_f8_output:
+reg_f9_output:
+reg_f10_output:
+reg_f11_output:
+reg_f12_output:
+reg_f13_output:
+reg_f14_output:
+reg_f15_output:
+reg_f16_output:
+reg_f17_output:
+reg_f18_output:
+reg_f19_output:
+reg_f20_output:
+reg_f21_output:
+reg_f22_output:
+reg_f23_output:
+reg_f24_output:
+reg_f25_output:
+reg_f26_output:
+reg_f27_output:
+reg_f28_output:
+reg_f29_output:
+reg_f30_output:
+reg_f31_output:
+test_memory:
+loop_count:
