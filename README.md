@@ -1,50 +1,53 @@
-# Checker Usage
+# Usage
 
-## Run tests
+Only two code files are used:
 
-Clone this repo inside your assignment root and run:
+- main.cpp: core simulator + dump states
+- check.cpp: build + run main.cpp + exact output compare
 
-```bash
-python checker-col216-A2/checker.py
-```
+First clone the repo inside your project root, then:
 
-What this does:
-- Assumes that you have already generated a binary for your processor named 'main'.
-- `checker.py` runs all pairs in folders named `test1`, `test2`, ...
-- It matches `codeX.txt` with `ansX.txt`
+## Build
 
-## Contribute testcases
-
-Rule: each contributed testcase set must be in a **new** test folder.
-
-1. Create a new folder inside `checker-col216-A2`, for example `test67`.
-2. Add one or more files named `code1.txt`, `code2.txt`, ...
-3. Copy gen.py that is inside test2/ into test3/
-4. Generate expected outputs using `gen.py` in that folder.
-
-Example:
+From checker-col216-A2:
 
 ```bash
-cd checker-col216-A2
-mkdir test3
-cd test3
-#copy gen.py into test3,create code1.txt inside test3
-python gen.py
+g++ -std=c++17 check.cpp -o check
 ```
 
-This creates `ans1.txt`, `ans2.txt`, ... in UTF-16 format.
-
-4. From repo root, verify everything:
+## Check all tests
 
 ```bash
-python checker-col216-A2/checker.py
+./check
 ```
 
-5. Commit and open a Pull Request with:
-- new `testN/` folder
-- all `code*.txt` files
-- matching generated `ans*.txt` files
-- a short note describing what the tests cover
+This compares raw bytes of:
 
-DISCLAIMER: please do not accidentally leak YOUR assignment code, Abhinav is not responsible for this.
-I do not claim ownership of all code in this repository.
+- output from ./main <code.txt>
+- ans*.txt
+
+## Regenerate ans files
+
+```bash
+./check --write
+```
+
+This rewrites ans*.txt using current output from main.cpp.
+
+## Contribute Testcase
+
+1. Create a new test folder inside checker-col216-A2 (for example: test10).
+2. Add your code files as code1.txt, code2.txt, ...
+3. Regenerate expected outputs:
+
+```bash
+./check --write
+```
+
+4. Verify everything passes:
+
+```bash
+./check
+```
+
+5. Create a PR.
