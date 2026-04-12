@@ -1,3 +1,7 @@
+#include <signal.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
 #include <algorithm>
 #include <chrono>
 #include <cstdio>
@@ -22,19 +26,90 @@ string quote(const string& s) {
   return out;
 }
 
-int runCommand(const string& cmd, string& output) {
-  FILE* pipe = popen((cmd + " 2>&1").c_str(), "r");
-  if (!pipe) {
-    output = "popen failed";
+int runCommand(const string& cmd, string& output, int timeoutSeconds = -1,
+               bool* timedOut = nullptr) {
+  if (timedOut)
+    *timedOut = false;
+
+  int pipefd[2];
+  if (pipe(pipefd) != 0) {
+    output = "pipe failed";
     return -1;
   }
 
-  output.clear();
-  char buf[4096];
-  while (fgets(buf, sizeof(buf), pipe) != nullptr) output += buf;
+  pid_t pid = fork();
+  if (pid < 0) {
+    close(pipefd[0]);
+    close(pipefd[1]);
+    output = "fork failed";
+    return -1;
+  }
 
-  int status = pclose(pipe);
+  if (pid == 0) {
+    dup2(pipefd[1], STDOUT_FILENO);
+    dup2(pipefd[1], STDERR_FILENO);
+    close(pipefd[0]);
+    close(pipefd[1]);
+    execl("/bin/sh", "sh", "-c", cmd.c_str(), (char*) nullptr);
+    _exit(127);
+  }
+
+  close(pipefd[1]);
+  output.clear();
+  auto start = std::chrono::steady_clock::now();
+  char buf[4096];
+  int status = 0;
+  bool childExited = false;
+
+  while (true) {
+    fd_set readfds;
+    FD_ZERO(&readfds);
+    FD_SET(pipefd[0], &readfds);
+
+    struct timeval tv;
+    tv.tv_sec = 0;
+    tv.tv_usec = 200000;
+    int sel = select(pipefd[0] + 1, &readfds, nullptr, nullptr, &tv);
+    if (sel > 0 && FD_ISSET(pipefd[0], &readfds)) {
+      ssize_t n = read(pipefd[0], buf, sizeof(buf));
+      if (n > 0)
+        output.append(buf, static_cast<size_t>(n));
+    }
+
+    pid_t w = waitpid(pid, &status, WNOHANG);
+    if (w == pid) {
+      childExited = true;
+      break;
+    }
+
+    if (timeoutSeconds >= 0) {
+      auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(
+          std::chrono::steady_clock::now() - start);
+      if (elapsed.count() >= timeoutSeconds) {
+        kill(pid, SIGKILL);
+        waitpid(pid, &status, 0);
+        if (timedOut)
+          *timedOut = true;
+        break;
+      }
+    }
+  }
+
+  while (true) {
+    ssize_t n = read(pipefd[0], buf, sizeof(buf));
+    if (n <= 0)
+      break;
+    output.append(buf, static_cast<size_t>(n));
+  }
+  close(pipefd[0]);
+
   if (status == -1)
+    return -1;
+
+  if (!childExited && timedOut && *timedOut)
+    return 124;
+
+  if (!WIFEXITED(status))
     return -1;
   return WEXITSTATUS(status);
 }
@@ -117,6 +192,7 @@ fs::path ansPathForCode(const fs::path& codePath) {
 }
 
 int main(int argc, char** argv) {
+  constexpr int kPerFileTimeoutSeconds = 5;
   bool writeMode = (argc >= 2 && string(argv[1]) == "--write");
   fs::path checkerRoot = fs::current_path();
   fs::path root = checkerRoot.parent_path();
@@ -192,32 +268,37 @@ int main(int argc, char** argv) {
       fs::create_directories(tempDir);
       fs::copy_file(codePath, tempCode, fs::copy_options::overwrite_existing);
 
-      int prepRc =
-          runCommand("python3 " + quote((root / "compiler.py").string()) + " " +
-                         quote(tempCode.string()),
-                     out);
+      bool prepTimedOut = false;
+      int prepRc = runCommand("make -C " + quote(root.string()) +
+                                  " run FILE=" + quote(tempCode.string()),
+                              out, kPerFileTimeoutSeconds, &prepTimedOut);
       if (prepRc != 0) {
         fails++;
         std::cout << "FAIL " << label << "\n"
-                  << "Preprocess failed for " << tempCode.filename().string()
-                  << "\n"
-                  << out;
-        if (!out.empty() && out.back() != '\n')
-          std::cout << "\n";
+                  << (prepTimedOut
+                          ? "Preprocess timed out after " +
+                                std::to_string(kPerFileTimeoutSeconds) +
+                                " seconds for "
+                          : "Preprocess failed for ")
+                  << tempCode.filename().string() << "\n";
         fs::remove_all(tempDir);
         continue;
       }
 
       string runOutput;
+      bool runTimedOut = false;
       int runRc = runCommand(
           quote((root / "main").string()) + " " + quote(tempCode.string()),
-          runOutput);
+          runOutput, kPerFileTimeoutSeconds, &runTimedOut);
       if (runRc != 0) {
         fails++;
-        std::cout << "FAIL " << label << " (main returned " << runRc << ")\n";
-        std::cout << runOutput;
-        if (!runOutput.empty() && runOutput.back() != '\n')
-          std::cout << "\n";
+        if (runTimedOut) {
+          std::cout << "FAIL " << label << " (timed out after "
+                    << kPerFileTimeoutSeconds << " seconds)\n";
+        } else {
+          std::cout << "FAIL " << label << " (main returned " << runRc << ")\n";
+        }
+
         fs::remove_all(tempDir);
         continue;
       }

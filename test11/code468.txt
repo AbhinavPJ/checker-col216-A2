@@ -1,0 +1,359 @@
+j test_start
+crash_backward:
+test_start:
+freg_init:
+freg_s_init:
+freg_d_init:
+xreg_init:
+j pseg_0
+pseg_0:
+slti x17 x10 -1714
+addi x28 x0 -1864
+rem x5 x24 x8
+addi x11 x29 0
+addi x14 x11 0
+addi x5 x0 1
+addi x20 x0 1755
+addi x25 x0 -1
+addi x2 x0 -1151
+addi x4 x0 635
+addi x29 x4 1228
+addi x19 x0 -508
+addi x26 x0 -958
+and x11 x19 x19
+addi x31 x0 1291
+addi x27 x0 929
+xor x25 x25 x5
+addi x16 x0 -350
+or x13 x26 x16
+addi x4 x0 1509
+ori x26 x21 -821
+addi x29 x0 -1199
+addi x7 x0 1125
+addi x18 x0 772
+addi x10 x0 -974
+addi x28 x4 532
+addi x6 x0 -1541
+addi x9 x0 -1301
+addi x14 x0 1
+addi x13 x0 794
+sub x10 x31 x31
+xor x31 x12 x9
+addi x12 x0 -1
+addi x16 x13 1847
+or x2 x9 x9
+addi x23 x0 -1110
+blt x28 x4 crash_backward
+addi x19 x6 -1098
+addi x29 x0 278
+addi x21 x0 1646
+addi x7 x0 -942
+ble x6 x19 crash_backward
+and x17 x11 x25
+xor x12 x12 x14
+addi x30 x0 1346
+slt x20 x23 x23
+blt x16 x13 crash_forward
+or x15 x21 x5
+xor x22 x7 x7
+and x1 x9 x12
+or x24 x1 x14
+addi x10 x0 -1403
+addi x8 x29 1101
+beq x29 x8 crash_backward
+blt x17 x15 crash_forward
+rem x3 x27 x21
+addi x8 x0 -1751
+addi x10 x0 1
+addi x12 x0 552
+addi x20 x0 -1
+addi x6 x0 -19
+and x12 x4 x4
+addi x24 x0 797
+addi x7 x0 542
+addi x2 x7 1924
+addi x31 x0 -815
+addi x27 x0 -1816
+slt x26 x5 x5
+addi x29 x0 0
+beq x7 x2 crash_backward
+xor x20 x20 x10
+addi x5 x0 -869
+addi x19 x0 1
+addi x1 x0 -1648
+addi x9 x1 -838
+lw x2 -1259(x5)
+ori x23 x9 100
+and x15 x14 x20
+addi x23 x0 -176
+or x22 x15 x10
+addi x14 x0 1884
+addi x24 x0 -610
+add x17 x27 x27
+addi x20 x0 1319
+addi x5 x0 1
+addi x24 x0 -1709
+addi x15 x0 -1241
+addi x16 x0 1879
+addi x17 x20 1983
+ble x1 x9 crash_backward
+ble x17 x20 crash_forward
+addi x31 x0 -319
+addi x18 x0 -1
+addi x27 x0 0
+addi x2 x0 0
+addi x6 x0 0
+addi x11 x0 -1
+xor x11 x11 x5
+xor x18 x18 x19
+and x7 x18 x11
+addi x12 x24 -1469
+addi x1 x0 -462
+and x13 x12 x18
+addi x3 x0 221
+or x8 x7 x5
+or x30 x13 x19
+addi x14 x0 1780
+addi x20 x3 624
+addi x16 x0 1488
+addi x2 x0 -1506
+addi x12 x0 1501
+addi x26 x0 -542
+mul x8 x13 x20
+addi x23 x0 1088
+addi x23 x0 -234
+addi x8 x0 -1573
+addi x7 x0 924
+sub x18 x26 x26
+addi x17 x0 -55
+addi x4 x0 -1141
+lw x21 340(x11)
+addi x13 x0 -771
+addi x5 x4 -756
+slt x1 x26 x26
+addi x29 x0 1
+or x26 x24 x0
+addi x19 x0 1241
+addi x20 x0 -662
+xori x16 x25 -7
+addi x23 x0 -933
+addi x8 x0 956
+rem x27 x2 x7
+addi x12 x0 -327
+addi x30 x20 -115
+addi x28 x0 1345
+addi x6 x0 1248
+addi x15 x0 -1
+mul x14 x13 x8
+addi x17 x0 308
+add x2 x6 x17
+addi x22 x0 1602
+blt x4 x5 crash_backward
+xor x15 x15 x29
+addi x1 x0 1314
+addi x17 x0 1
+addi x7 x0 0
+and x9 x12 x15
+ble x20 x30 crash_forward
+addi x27 x0 -1445
+addi x16 x23 -1654
+addi x18 x0 1057
+addi x13 x0 0
+addi x21 x0 1111
+blt x23 x16 crash_backward
+bne x7 x13 crash_forward
+addi x6 x0 -1
+addi x22 x0 -360
+addi x12 x0 -925
+addi x2 x0 -587
+addi x18 x0 -636
+addi x5 x0 194
+addi x20 x0 -1284
+addi x12 x0 -1688
+addi x21 x0 1002
+addi x26 x0 -2041
+addi x2 x26 -1958
+div x30 x21 x21
+or x3 x8 x29
+xor x6 x6 x17
+addi x25 x0 -1842
+add x8 x10 x25
+addi x11 x0 -33
+blt x9 x3 crash_backward
+and x31 x13 x6
+addi x23 x11 -802
+or x28 x31 x17
+ble x31 x28 crash_forward
+addi x29 x0 0
+addi x16 x0 1
+addi x6 x0 1427
+addi x26 x0 184
+blt x26 x26 crash_forward
+sub x24 x12 x25
+addi x28 x0 0
+addi x27 x0 0
+rem x18 x26 x26
+addi x8 x0 -1
+addi x31 x0 0
+addi x4 x0 0
+addi x21 x0 0
+bne x31 x21 crash_backward
+addi x30 x0 -2007
+xor x8 x8 x16
+addi x11 x0 -236
+addi x9 x0 1739
+and x5 x5 x8
+addi x12 x0 854
+addi x15 x0 1686
+mul x17 x11 x9
+addi x4 x0 844
+addi x13 x0 -1116
+or x3 x3 x16
+addi x2 x0 -1498
+addi x28 x0 915
+addi x21 x0 -27
+j reg_dump
+reg_dump:
+lw x2 0(x1)
+addi x3 x2 -1
+sw x3 0(x1)
+bne x2 x0 pseg_0
+freg_save:
+j test_end
+crash_forward:
+test_end:
+hidden_data:
+xreg_init_data:
+reg_x0_init:
+reg_x1_init:
+reg_x2_init:
+reg_x3_init:
+reg_x4_init:
+reg_x5_init:
+reg_x6_init:
+reg_x7_init:
+reg_x8_init:
+reg_x9_init:
+reg_x10_init:
+reg_x11_init:
+reg_x12_init:
+reg_x13_init:
+reg_x14_init:
+reg_x15_init:
+reg_x16_init:
+reg_x17_init:
+reg_x18_init:
+reg_x19_init:
+reg_x20_init:
+reg_x21_init:
+reg_x22_init:
+reg_x23_init:
+reg_x24_init:
+reg_x25_init:
+reg_x26_init:
+reg_x27_init:
+reg_x28_init:
+reg_x29_init:
+reg_x30_init:
+reg_x31_init:
+freg_init_data:
+reg_f0_init:
+reg_f1_init:
+reg_f2_init:
+reg_f3_init:
+reg_f4_init:
+reg_f5_init:
+reg_f6_init:
+reg_f7_init:
+reg_f8_init:
+reg_f9_init:
+reg_f10_init:
+reg_f11_init:
+reg_f12_init:
+reg_f13_init:
+reg_f14_init:
+reg_f15_init:
+reg_f16_init:
+reg_f17_init:
+reg_f18_init:
+reg_f19_init:
+reg_f20_init:
+reg_f21_init:
+reg_f22_init:
+reg_f23_init:
+reg_f24_init:
+reg_f25_init:
+reg_f26_init:
+reg_f27_init:
+reg_f28_init:
+reg_f29_init:
+reg_f30_init:
+reg_f31_init:
+xreg_output_data:
+reg_x0_output:
+reg_x1_output:
+reg_x2_output:
+reg_x3_output:
+reg_x4_output:
+reg_x5_output:
+reg_x6_output:
+reg_x7_output:
+reg_x8_output:
+reg_x9_output:
+reg_x10_output:
+reg_x11_output:
+reg_x12_output:
+reg_x13_output:
+reg_x14_output:
+reg_x15_output:
+reg_x16_output:
+reg_x17_output:
+reg_x18_output:
+reg_x19_output:
+reg_x20_output:
+reg_x21_output:
+reg_x22_output:
+reg_x23_output:
+reg_x24_output:
+reg_x25_output:
+reg_x26_output:
+reg_x27_output:
+reg_x28_output:
+reg_x29_output:
+reg_x30_output:
+reg_x31_output:
+freg_output_data:
+reg_f0_output:
+reg_f1_output:
+reg_f2_output:
+reg_f3_output:
+reg_f4_output:
+reg_f5_output:
+reg_f6_output:
+reg_f7_output:
+reg_f8_output:
+reg_f9_output:
+reg_f10_output:
+reg_f11_output:
+reg_f12_output:
+reg_f13_output:
+reg_f14_output:
+reg_f15_output:
+reg_f16_output:
+reg_f17_output:
+reg_f18_output:
+reg_f19_output:
+reg_f20_output:
+reg_f21_output:
+reg_f22_output:
+reg_f23_output:
+reg_f24_output:
+reg_f25_output:
+reg_f26_output:
+reg_f27_output:
+reg_f28_output:
+reg_f29_output:
+reg_f30_output:
+reg_f31_output:
+test_memory:
+loop_count:
