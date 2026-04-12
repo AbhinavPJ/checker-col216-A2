@@ -1,11 +1,11 @@
-#include "Processor.h"
-
 #include <iostream>
 #include <string>
 
+#include "Processor.h"
+
 using namespace std;
 
-static void dumpCycleMemory(const Processor &cpu, int cycle) {
+static void dumpCycleMemory(const Processor& cpu, int cycle) {
   cout << "cycle " << cycle << ": ";
   for (int i = 0; i < static_cast<int>(cpu.Memory.size()); i++) {
     cout << cpu.Memory[i] << " ";
@@ -13,7 +13,7 @@ static void dumpCycleMemory(const Processor &cpu, int cycle) {
   cout << "\n";
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   if (argc < 2) {
     cerr << "Usage: ./main <filename.s>\n";
     return 1;
