@@ -51,3 +51,6 @@ This rewrites ans*.txt using current output from main.cpp.
 ```
 
 5. Create a PR.
+
+DISCLAIMER: please do not accidentally leak YOUR assignment code, Abhinav is not responsible for this.
+I do not claim ownership of all code in this repository.
