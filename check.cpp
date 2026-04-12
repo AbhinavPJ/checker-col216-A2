@@ -11,8 +11,7 @@
 
 using namespace std;
 namespace fs = filesystem;
-
-string quote(const string &s) {
+string quote(const string& s) {
   string out = "\"";
   for (char c : s) {
     if (c == '\\' || c == '"')
@@ -23,8 +22,8 @@ string quote(const string &s) {
   return out;
 }
 
-int runCommand(const string &cmd, string &output) {
-  FILE *pipe = popen((cmd + " 2>&1").c_str(), "r");
+int runCommand(const string& cmd, string& output) {
+  FILE* pipe = popen((cmd + " 2>&1").c_str(), "r");
   if (!pipe) {
     output = "popen failed";
     return -1;
@@ -32,8 +31,7 @@ int runCommand(const string &cmd, string &output) {
 
   output.clear();
   char buf[4096];
-  while (fgets(buf, sizeof(buf), pipe) != nullptr)
-    output += buf;
+  while (fgets(buf, sizeof(buf), pipe) != nullptr) output += buf;
 
   int status = pclose(pipe);
   if (status == -1)
@@ -41,7 +39,7 @@ int runCommand(const string &cmd, string &output) {
   return WEXITSTATUS(status);
 }
 
-string readFile(const fs::path &p) {
+string readFile(const fs::path& p) {
   std::ifstream in(p, std::ios::binary);
   if (!in)
     throw std::runtime_error("Unable to open file: " + p.string());
@@ -50,23 +48,39 @@ string readFile(const fs::path &p) {
   return ss.str();
 }
 
-void writeFile(const fs::path &p, const string &content) {
+void writeFile(const fs::path& p, const string& content) {
   std::ofstream out(p, std::ios::binary);
   if (!out)
     throw std::runtime_error("Unable to write file: " + p.string());
   out.write(content.data(), static_cast<std::streamsize>(content.size()));
 }
 
-bool startsWith(const string &s, const string &prefix) {
+bool startsWith(const string& s, const string& prefix) {
   return s.size() >= prefix.size() && s.compare(0, prefix.size(), prefix) == 0;
 }
 
-bool endsWith(const string &s, const string &suffix) {
+bool endsWith(const string& s, const string& suffix) {
   return s.size() >= suffix.size() &&
          s.compare(s.size() - suffix.size(), suffix.size(), suffix) == 0;
 }
 
-bool isDigits(const string &s) {
+string sanitizeForFilename(const string& s) {
+  string out;
+  out.reserve(s.size());
+  for (char c : s) {
+    if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
+        (c >= '0' && c <= '9') || c == '-' || c == '_') {
+      out += c;
+    } else {
+      out += '_';
+    }
+  }
+  if (out.empty())
+    out = "dump";
+  return out;
+}
+
+bool isDigits(const string& s) {
   if (s.empty())
     return false;
   for (char c : s) {
@@ -76,14 +90,14 @@ bool isDigits(const string &s) {
   return true;
 }
 
-bool isCodeFileName(const string &name) {
+bool isCodeFileName(const string& name) {
   if (!startsWith(name, "code") || !endsWith(name, ".txt"))
     return false;
   string mid = name.substr(4, name.size() - 8);
   return isDigits(mid);
 }
 
-int testDirIndex(const fs::path &p) {
+int testDirIndex(const fs::path& p) {
   string name = p.filename().string();
   if (!startsWith(name, "test"))
     return -1;
@@ -93,7 +107,7 @@ int testDirIndex(const fs::path &p) {
   return std::stoi(n);
 }
 
-fs::path ansPathForCode(const fs::path &codePath) {
+fs::path ansPathForCode(const fs::path& codePath) {
   string name = codePath.filename().string();
   if (isCodeFileName(name)) {
     string number = name.substr(4, name.size() - 8);
@@ -102,13 +116,13 @@ fs::path ansPathForCode(const fs::path &codePath) {
   return codePath.parent_path() / (codePath.stem().string() + "_ans.txt");
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
   bool writeMode = (argc >= 2 && string(argv[1]) == "--write");
   fs::path checkerRoot = fs::current_path();
   fs::path root = checkerRoot.parent_path();
 
   vector<fs::path> testDirs;
-  for (const auto &entry : fs::directory_iterator(checkerRoot)) {
+  for (const auto& entry : fs::directory_iterator(checkerRoot)) {
     if (!entry.is_directory())
       continue;
     if (testDirIndex(entry.path()) != -1)
@@ -116,14 +130,14 @@ int main(int argc, char **argv) {
   }
 
   std::sort(testDirs.begin(), testDirs.end(),
-            [](const fs::path &a, const fs::path &b) {
+            [](const fs::path& a, const fs::path& b) {
               return testDirIndex(a) < testDirIndex(b);
             });
 
   vector<std::pair<fs::path, fs::path>> cases;
-  for (const auto &dir : testDirs) {
+  for (const auto& dir : testDirs) {
     vector<fs::path> codes;
-    for (const auto &entry : fs::directory_iterator(dir)) {
+    for (const auto& entry : fs::directory_iterator(dir)) {
       if (!entry.is_regular_file())
         continue;
       if (isCodeFileName(entry.path().filename().string())) {
@@ -132,9 +146,9 @@ int main(int argc, char **argv) {
     }
 
     std::sort(codes.begin(), codes.end());
-    for (const auto &code : codes) {
+    for (const auto& code : codes) {
       fs::path ans = ansPathForCode(code);
-      if (fs::exists(ans))
+      if (fs::exists(ans) || writeMode)
         cases.push_back({code, ans});
     }
   }
@@ -156,13 +170,13 @@ int main(int argc, char **argv) {
         std::cout << "\n";
       return 2;
     }
-  } catch (const std::exception &e) {
+  } catch (const std::exception& e) {
     std::cout << "Build/setup failure\n" << e.what() << "\n";
     return 2;
   }
 
   int fails = 0;
-  for (const auto &tc : cases) {
+  for (const auto& tc : cases) {
     fs::path codePath = tc.first;
     fs::path ansPath = tc.second;
     string label = codePath.parent_path().filename().string() + "/" +
@@ -195,9 +209,9 @@ int main(int argc, char **argv) {
       }
 
       string runOutput;
-      int runRc = runCommand(quote((root / "main").string()) + " " +
-                                 quote(tempCode.string()),
-                             runOutput);
+      int runRc = runCommand(
+          quote((root / "main").string()) + " " + quote(tempCode.string()),
+          runOutput);
       if (runRc != 0) {
         fails++;
         std::cout << "FAIL " << label << " (main returned " << runRc << ")\n";
@@ -208,17 +222,33 @@ int main(int argc, char **argv) {
         continue;
       }
 
-      string expected = readFile(ansPath);
-      if (runOutput == expected) {
+      bool hasExpected = fs::exists(ansPath);
+      string expected;
+      if (hasExpected)
+        expected = readFile(ansPath);
+
+      if (hasExpected && runOutput == expected) {
         std::cout << "PASS " << label << "\n";
       } else if (writeMode) {
         writeFile(ansPath, runOutput);
-        std::cout << "WROTE " << label << "\n";
+        std::cout << (hasExpected ? "WROTE " : "CREATED ") << label << "\n";
       } else {
         fails++;
-        std::cout << "FAIL " << label << " (output mismatch)\n";
+        if (!hasExpected) {
+          std::cout << "FAIL " << label << " (missing expected output file)\n";
+        } else {
+          fs::path dumpDir = checkerRoot / "debug_dumps";
+          fs::create_directories(dumpDir);
+          fs::path dumpfile =
+              dumpDir / (sanitizeForFilename(label) + "_dump.txt");
+          std::cout << "FAIL " << label
+                    << " (output mismatch, actual output written to "
+                    << dumpfile.string() << ")\n";
+          // dump the actual output to dump.txt
+          writeFile(dumpfile, runOutput);
+        }
       }
-    } catch (const std::exception &e) {
+    } catch (const std::exception& e) {
       fails++;
       std::cout << "FAIL " << label << "\n" << e.what() << "\n";
     }

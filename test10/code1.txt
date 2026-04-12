@@ -1,0 +1,9 @@
+.data: 100
+addi x10 x0 1
+div x5 x10 x10
+div x6 x5 x10
+div x7 x6 x10
+addi x1 x0 42
+sw x1 0(x0)
+lw x2 0(x0)
+add x3 x2 x0
