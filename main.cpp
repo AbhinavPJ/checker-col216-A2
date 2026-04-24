@@ -30,9 +30,11 @@ int main(int argc, char* argv[]) {
   }
 
   dumpCycleMemory(cpu, 0);
+  cpu.dumpArchitecturalState();
   while (true) {
     bool keep_running = cpu.step();
     dumpCycleMemory(cpu, cpu.clock_cycle);
+    cpu.dumpArchitecturalState();
     if (!keep_running) {
       break;
     }
