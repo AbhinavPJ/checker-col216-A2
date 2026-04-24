@@ -1,0 +1,42 @@
+# Sieve of Eratosthenes, N=50. A[i]=1 marks i as composite.
+# Count of primes below N ends up in x20 (expected: 15).
+#
+# Stresses:
+#   - LSQ: inner loop is a chain of sw A[j]=1 with j += i, forwarding rare
+#   - Branch predictor: inner-loop trip count differs wildly per prime
+#     (i=2: 24 iters, i=3: ~14, i=5: 5, i=7: 1)
+#   - Multiplier: outer loop uses i*i to decide when to stop
+
+.A: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+
+    addi x1 x0 50          # N
+    addi x2 x0 2           # i = 2
+
+outer:
+    mul x3 x2 x2          # i*i
+    blt x1 x3 mark_done   # if N < i*i, stop marking
+    lw x4 A(x2)
+    bne x4 x0 next_outer  # if A[i] != 0, already composite, skip
+    addi x5 x3 0           # j = i*i
+inner:
+    addi x6 x0 1
+    sw x6 A(x5)          # A[j] = 1
+    add x5 x5 x2          # j += i
+    blt x5 x1 inner       # while j < N
+next_outer:
+    addi x2 x2 1
+    blt x2 x1 outer
+
+mark_done:
+    # Count primes: A[i]==0 for i in [2,N)
+    addi x10 x0 2          # i = 2
+    addi x20 x0 0          # count = 0
+count_loop:
+    lw x11 A(x10)
+    bne x11 x0 skip_count
+    addi x20 x20 1
+skip_count:
+    addi x10 x10 1
+    blt x10 x1 count_loop
+
+# Expected: x20 = 15 (primes 2,3,5,7,11,13,17,19,23,29,31,37,41,43,47)

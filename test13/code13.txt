@@ -1,0 +1,37 @@
+# Rename-stress test. Long-running, uses only 4 live arch regs (x1, x2, x3, x5)
+# plus x0. Each iteration performs 7 back-to-back writes to x5 across the
+# adder, multiplier, and logic units, then folds the result into x1.
+#
+# Stresses:
+#   - RAT must track many in-flight versions of x5 simultaneously
+#   - WAW renaming correctness across diverse execution units
+#   - RAW through the WAW chain (every op reads the previous x5)
+#   - Accumulator WAW on x1 across iterations
+#   - RAT cleanup timing: if RAT entry for x5 isn't freed on commit of
+#     an older version while a younger one is in-flight, the next read
+#     sees stale ARF
+#
+# Values stay well within int32 range by construction.
+
+.A: 3 7 1 4 9 2 8 5 6 10 3 7 1 4 9 2 8 5 6 10 3 7 1 4 9 2 8 5 6 10 3 7 1 4 9 2 8 5 6 10 3 7 1 4 9 2 8 5 6 10 3 7 1 4 9 2 8 5 6 10 3 7 1 4 9 2 8 5 6 10 3 7 1 4 9 2 8 5 6 10 3 7 1 4 9 2 8 5 6 10 3 7 1 4 9 2 8 5 6 10
+
+    addi x1 x0 0          # acc = 0
+    addi x2 x0 0          # i   = 0
+    addi x3 x0 100        # N   = 100
+
+loop:
+    lw   x5 A(x2)         # x5 <- A[i]                (LSQ)
+    add  x5 x5 x2         # x5 += i                   (adder, WAW #1)
+    mul  x5 x5 x2         # x5 *= i                   (mul,   WAW #2)
+    and  x5 x5 x5         # x5 &= x5                  (logic, WAW #3, identity)
+    xor  x5 x5 x0         # x5 ^= 0                   (logic, WAW #4, identity)
+    sub  x5 x5 x2         # x5 -= i                   (adder, WAW #5)
+    ori  x5 x5 0          # x5 |= 0                   (logic, WAW #6, identity)
+    addi x5 x5 0          # x5 += 0                   (adder, WAW #7, identity)
+    add  x1 x1 x5         # acc += x5                 (x1 WAW across iters)
+    addi x2 x2 1          # i++
+    blt  x2 x3 loop
+
+# Per-iteration net: x5 = A[i]*i + i*(i-1), then acc += x5.
+# Closed form for sum over i=0..99 is easily verifiable if needed.
+# Dominated by mul per iter -> ~4-6k cycles at default latencies.

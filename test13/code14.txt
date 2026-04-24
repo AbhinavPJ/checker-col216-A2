@@ -1,0 +1,44 @@
+# code_mispredict.txt
+# Realistic branch-heavy workload: compute the GCD of all elements of an
+# array using Euclid's subtract-based algorithm (the pattern used in
+# classic OOO microbenchmarks — see e.g. riscv-tests/benchmarks/multiply,
+# dcraft's OOO tests, and SonicBOOM's branch regressions).
+#
+# Control flow per inner iteration:
+#   while a != b:
+#       if a < b: b -= a         # swap branch
+#       else:     a -= b
+# The inner beq and blt are data-dependent on partially-reduced values and
+# are individually unpredictable → heavy mispredict traffic. Outer loop
+# runs 9 back-to-back GCD reductions, so the predictor never gets to
+# "learn" any stable pattern.
+#
+# Final state: x1 == gcd(48,36,24,60,180,72,144,96,108,120) = 12.
+# Pair with config "branch_pressure" (br_rs=1, add_lat=4) so every
+# misprediction serializes through a single branch RS.
+
+.A: 48 36 24 60 180 72 144 96 108 120
+
+    addi x10 x10 10         # length
+    lw   x1  0(x0)          # result = A[0]
+    addi x2  x2 1           # i = 1
+
+outer:
+    ble  x10 x2 done        # exit when i >= length
+    lw   x3  A(x2)          # b = A[i]
+
+gcd:
+    beq  x1  x3 gcd_done    # if a == b, gcd found
+    blt  x1  x3 swap        # if a < b, subtract a from b instead
+    sub  x1  x1 x3          # a -= b
+    j    gcd
+swap:
+    sub  x3  x3 x1          # b -= a
+    j    gcd
+gcd_done:
+
+    addi x2  x2 1           # i++
+    j    outer
+
+done:
+    addi x31 x31 1          # sentinel; x1 holds the final GCD = 12

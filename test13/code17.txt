@@ -1,0 +1,45 @@
+# code_exc_spec.txt
+# Speculative execution stress: FOUR distinct exception sources on the
+# mispredicted path, plus some speculative memory ops for good measure.
+# Correct behavior: flush discards every one of them, execution completes
+# normally through the fall-through path. Any single speculative exception
+# that leaks into commit causes a visible divergence (exception=true, pc
+# pinned to the offending instruction).
+#
+# Exception sources on the speculative path:
+#   1. `div  x3  x4  x2`   — divide by zero   (x2 = 0)
+#   2. `rem  x11 x4  x2`   — remainder by zero
+#   3. `add  x12 x20 x4`   — integer overflow (x20 = INT_MAX, +10)
+#   4. `mul  x13 x20 x20`  — integer overflow (INT_MAX * INT_MAX)
+#
+# Branch is always NT; BP starts at state 0 (predict TAKEN); guaranteed
+# misprediction on first execution. Config pairs with "spec_exc" which
+# gives the branch a long add_lat so the speculative window stays open
+# long enough for every exception-raising op to complete its execution
+# latch before the flush arrives.
+
+    addi x1  x1 5            # x1 = 5 (nonzero -> branch always NT)
+    addi x2  x2 0            # x2 = 0 (divisor for the spec-path div/rem)
+    addi x4  x4 10           # x4 = 10
+    addi x20 x0 2147483647   # x20 = INT_MAX (for overflow on spec path)
+
+    beq  x1  x0 spec_target  # NEVER TAKEN, PREDICTED TAKEN -> misprediction
+
+    # -------- Fall-through (correct) path --------
+    addi x5  x5 100
+    addi x6  x6 200
+    addi x7  x7 300
+    j    done
+
+spec_target:
+    # -------- Speculative path: must be fully flushed --------
+    div  x3  x4  x2          # DIV/0   (speculative exception #1)
+    rem  x11 x4  x2          # REM/0   (speculative exception #2)
+    add  x12 x20 x4          # overflow: INT_MAX + 10  (#3)
+    mul  x13 x20 x20         # overflow: INT_MAX * INT_MAX (#4)
+    addi x14 x14 999         # must not commit
+
+done:
+    addi x31 x31 1           # Final state: x1=5, x2=0, x4=10, x20=INT_MAX,
+                             # x5=100, x6=200, x7=300, x31=1, exception=false,
+                             # pc past end. x3, x11-14 all 0 (spec flushed).

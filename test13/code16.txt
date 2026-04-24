@@ -1,0 +1,42 @@
+# Linear congruential RNG + histogram, restricted to 8 architectural regs.
+# Live regs: x0, x1, x2, x3, x4, x5, x6, x7.
+#
+# x1: loop counter i      | x2: N (loop limit)
+# x3: x (LCG state)       | x4: m (modulus)
+# x5: bucket count        | x6: scratch (a / c / bucket idx)
+# x7: scratch (a*x / a*x+c / hist value)
+#
+# The small constants (a, c) are rematerialized via `addi` each iteration
+# instead of being held in dedicated registers -- this both lets us fit in
+# 8 regs AND creates heavy WAW pressure on x6/x7 per iteration.
+#
+# Stresses:
+#   - Heavy WAW on x6 (2 writes/iter) and x7 (3 writes/iter)
+#   - RAT must track many in-flight x7 versions simultaneously
+#   - Every execution unit hit per iter: adder + multiplier + divider (rem)
+#     + LSQ + branch
+#   - LSQ aliasing: repeated writes to hist[bucket] for same bucket
+
+.H: 0 0 0 0 0 0 0 0 0 0
+
+    addi x1 x0 0           # i = 0
+    addi x2 x0 80          # N = 80
+    addi x3 x0 1            # x (LCG state, seed = 1)
+    addi x4 x0 31           # m (prime modulus)
+    addi x5 x0 10           # buckets
+
+loop:
+    addi x6 x0 5            # a = 5          (scratch load)
+    mul  x7 x3 x6           # x7 = a*x       (multiplier)
+    addi x6 x0 3            # c = 3          (WAW on x6)
+    add  x7 x7 x6           # x7 = a*x + c   (WAW on x7)
+    rem  x3 x7 x4           # x = (a*x+c) % m
+    rem  x6 x3 x5           # bucket = x % buckets   (WAW on x6)
+    lw   x7 H(x6)           # hist[bucket]           (WAW on x7)
+    addi x7 x7 1            # increment              (WAW on x7)
+    sw   x7 H(x6)           # store back
+    addi x1 x1 1            # i++
+    blt  x1 x2 loop
+
+# After 80 iterations sum of H[0..9] == 80.
+# a*x + c max ~ 5*30 + 3 = 153, well within int32.

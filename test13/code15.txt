@@ -1,0 +1,13 @@
+# Out-of-bounds memory access on a path that MUST execute.
+# testexc.txt has OOB on a mispredicted path (must NOT raise);
+# this test verifies OOB does raise when actually executed.
+# Assumes default mem_size=1024.
+
+.A: 1 2 3 4 5
+
+addi x1 x0 2000         # address well past mem_size
+lw x2 A(x1)           # Memory[0 + 2000] -> OOB exception
+
+# Never committed. PC on halt should point to the `lw` above.
+addi x3 x0 99
+sw x3 A(x0)

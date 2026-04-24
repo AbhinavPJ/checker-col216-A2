@@ -1,0 +1,36 @@
+# Branch predictor 2-bit saturating-counter FSM walk.
+# Visits every state (0,1,2,3) AND both self-loops (0->0, 3->3)
+# AND exercises mispredictions in both directions.
+#
+# Pattern for the bne at <bp>: T T T N N N N T T T T
+# Predictor trace (start state = 0 ; spec states: 0/1 predict-T, 2/3 predict-NT):
+#   T: 0->0 (correct)
+#   T: 0->0 (correct)
+#   T: 0->0 (correct)
+#   N: 0->1 (MISPREDICT)
+#   N: 1->2 (MISPREDICT)
+#   N: 2->3 (correct)
+#   N: 3->3 (correct, saturate)
+#   T: 3->2 (MISPREDICT)
+#   T: 2->1 (MISPREDICT)
+#   T: 1->0 (correct)
+#   T: 0->0 (correct)
+
+.P: 1 1 1 0 0 0 0 1 1 1 1
+
+    addi x1 x0 0          # i = 0
+    addi x2 x0 11         # n = 11
+
+loop:
+    lw   x3 P(x1)         # x3 = pattern[i]
+bp:
+    bne  x3 x0 take_path  # THE studied branch (fixed PC, hit 11 times)
+    addi x10 x10 1        # count not-taken path
+    j    next
+take_path:
+    addi x11 x11 1        # count taken path
+next:
+    addi x1 x1 1
+    blt  x1 x2 loop
+
+# Expected: x10 = 4, x11 = 7

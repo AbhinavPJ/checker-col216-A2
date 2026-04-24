@@ -1,0 +1,4 @@
+addi x0, x0, 10    # Should execute but do nothing to ARF
+addi x1, x0, 5     # If x0 was renamed, x1 will wait forever for a tag
+add x2, x1, x0    # x2 should be 5 + 0 = 5
+addi x0, x0, 10
